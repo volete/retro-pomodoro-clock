@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Pomodoro Timer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styling-sandbix.css">
+</head>
+<body>
+    <div class="container">
+        <div class="pomodoro-box">
+            <h1>POMODORO TIMER</h1>
+            
+            <div class="mode-select">
+                <button class="pixel-button active" id="pomodoro">Pomodoro</button>
+                <button class="pixel-button" id="shortBreak">Short Break</button>
+                <button class="pixel-button" id="longBreak">Long Break</button>
+            </div>
+
+            <div class="timer-display" id="timer">25:00</div>
+
+            <div class="controls">
+                <button class="pixel-button" id="start">Start</button>
+                <button class="pixel-button" id="pause">Pause</button>
+                <button class="pixel-button" id="reset">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let timeLeft;
+        let timerId = null;
+        let isRunning = false;
+
+        const timerDisplay = document.getElementById('timer');
+        const startButton = document.getElementById('start');
+        const pauseButton = document.getElementById('pause');
+        const resetButton = document.getElementById('reset');
+        const pomodoroButton = document.getElementById('pomodoro');
+        const shortBreakButton = document.getElementById('shortBreak');
+        const longBreakButton = document.getElementById('longBreak');
+
+        function setTime(minutes) {
+            timeLeft = minutes * 60;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                timerId = setInterval(() => {
+                    timeLeft--;
+                    updateDisplay();
+                    if (timeLeft === 0) {
+                        clearInterval(timerId);
+                        isRunning = false;
+                        alert('Time is up!');
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            clearInterval(timerId);
+            isRunning = false;
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            setTime(25);
+        }
+
+        // Event Listeners
+        startButton.addEventListener('click', startTimer);
+        pauseButton.addEventListener('click', pauseTimer);
+        resetButton.addEventListener('click', resetTimer);
+
+        pomodoroButton.addEventListener('click', () => {
+            resetTimer();
+            setTime(25);
+            document.querySelectorAll('.mode-select .pixel-button').forEach(btn => btn.classList.remove('active'));
+            pomodoroButton.classList.add('active');
+        });
+
+        shortBreakButton.addEventListener('click', () => {
+            resetTimer();
+            setTime(5);
+            document.querySelectorAll('.mode-select .pixel-button').forEach(btn => btn.classList.remove('active'));
+            shortBreakButton.classList.add('active');
+        });
+
+        longBreakButton.addEventListener('click', () => {
+            resetTimer();
+            setTime(15);
+            document.querySelectorAll('.mode-select .pixel-button').forEach(btn => btn.classList.remove('active'));
+            longBreakButton.classList.add('active');
+        });
+
+        // Initialize
+        setTime(25);
+    </script>
+</body>
+</html>
+
+
